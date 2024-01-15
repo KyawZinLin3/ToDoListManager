@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ToDoListManager
 {
+    //color for output
     public class Color
     {
         public string NL = Environment.NewLine; // shortcut
@@ -27,16 +28,22 @@ namespace ToDoListManager
         public string REVERSE = Console.IsOutputRedirected ? "" : "\x1b[7m";
         public string NOREVERSE = Console.IsOutputRedirected ? "" : "\x1b[27m";
     }
+
+    class Task
+    {
+        public string TaskName { get; set; }
+        public string TaskDescription { get; set; }
+        public DateTime Date { get; set; }
+
+    }
     internal class Program
     {
+        List<Task> tasks = new List<Task>();
         static void Main(string[] args)
         {
             Program program = new Program();
-            Color color = new Color();
-           
+            Color color = new Color();      
             program.Menu();
-
-          
 
             Console.ReadKey();
         }
@@ -53,6 +60,10 @@ namespace ToDoListManager
             Console.WriteLine($"6. {color.ORANGE}Save {color.MAGENTA}and {color.ORANGE}Exit");
         }
 
+        private void AddTask()
+        {
+            
+        }
        
     }
 }
