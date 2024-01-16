@@ -48,7 +48,7 @@ namespace ToDoListManager
             program.Menu();
             while (program.status)
             {
-                Console.Write("Enter your choice:");
+                Console.Write($"{color.MAGENTA}Enter your choice:");
                 int value = int.Parse(Console.ReadLine());
                 program.PerformOption(value);   
 
@@ -66,6 +66,7 @@ namespace ToDoListManager
             Console.WriteLine($"{color.MAGENTA}4. {color.ORANGE}Remove {color.MAGENTA}Task");
             Console.WriteLine($"5. {color.ORANGE}View Completed {color.MAGENTA}Tasks");
             Console.WriteLine($"6. {color.ORANGE}Save {color.MAGENTA}and {color.ORANGE}Exit");
+            Console.WriteLine(" ");
         }
 
         private void PerformOption(int value)
@@ -76,7 +77,8 @@ namespace ToDoListManager
                     AddTask();
                     break;
                 case 2:
-                    status = false;
+                    //status = false;
+                    ViewTask();
                     break;
             }
         }
@@ -98,6 +100,18 @@ namespace ToDoListManager
             };
             tasks.Add(NewTask);
             Console.WriteLine("Task added successfully!");
+        }
+
+        private void ViewTask()
+        {
+            Console.WriteLine("Your To-Do List:");
+            Console.WriteLine(" ");
+            for(int i=0; i<tasks.Count; i++)
+            {
+                int number = i + 1;
+                Console.WriteLine(number +". Task: "+ tasks[i].TaskName + ", Due:" + tasks[i].Date.ToString("d-MM-yyyy") );
+            }
+
         }
 
     }
