@@ -34,18 +34,26 @@ namespace ToDoListManager
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }
         public DateTime Date { get; set; }
+        public bool IsComplete { get; set; }
 
     }
     internal class Program
     {
         List<Task> tasks = new List<Task>();
+        bool status = true;
         static void Main(string[] args)
         {
             Program program = new Program();
-            Color color = new Color();      
+            Color color = new Color();
             program.Menu();
+            while (program.status)
+            {
+                Console.Write("Enter your choice:");
+                int value = int.Parse(Console.ReadLine());
+                program.PerformOption(value);   
 
-            Console.ReadKey();
+            }
+            //Console.ReadKey();
         }
 
         private void Menu()
@@ -60,10 +68,37 @@ namespace ToDoListManager
             Console.WriteLine($"6. {color.ORANGE}Save {color.MAGENTA}and {color.ORANGE}Exit");
         }
 
+        private void PerformOption(int value)
+        {
+            switch (value)
+            {
+                case 1:
+                    AddTask();
+                    break;
+                case 2:
+                    status = false;
+                    break;
+            }
+        }
+
         private void AddTask()
         {
-            
+            Console.Write("Enter task name:");
+            string taskName = Console.ReadLine();
+            Console.Write("Enter task description:");
+            string taskDescription = Console.ReadLine();
+            Console.Write("Enter due date (YYYY-MM-DD):");
+            DateTime dateTime = DateTime.Parse(Console.ReadLine());
+            Task NewTask = new Task
+            {
+                TaskName = taskName,
+                TaskDescription = taskDescription,
+                Date = dateTime,
+                IsComplete = false
+            };
+            tasks.Add(NewTask);
+            Console.WriteLine("Task added successfully!");
         }
-       
+
     }
 }
