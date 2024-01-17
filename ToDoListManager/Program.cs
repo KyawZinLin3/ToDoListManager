@@ -1,7 +1,9 @@
 ﻿using Microsoft.SqlServer.Server;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,9 +30,17 @@ namespace ToDoListManager
         public string REVERSE = Console.IsOutputRedirected ? "" : "\x1b[7m";
         public string NOREVERSE = Console.IsOutputRedirected ? "" : "\x1b[27m";
     }
-
+    //class AutoIncrement
+    //{
+    //    private int id = 1;
+    //    public int GenerateId()
+    //    {
+    //        return id++;
+    //    }
+    //}
     class Task
     {
+        public int Id { get; set; }
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }
         public DateTime Date { get; set; }
@@ -39,8 +49,14 @@ namespace ToDoListManager
     }
     internal class Program
     {
+        //Program program = new Program();
         List<Task> tasks = new List<Task>();
         bool status = true;
+        private int id = 1;
+        public int GenerateId()
+        {
+            return id++;
+        }
         static void Main(string[] args)
         {
             Program program = new Program();
@@ -93,12 +109,15 @@ namespace ToDoListManager
             DateTime dateTime = DateTime.Parse(Console.ReadLine());
             Task NewTask = new Task
             {
+                Id = GenerateId(),
                 TaskName = taskName,
                 TaskDescription = taskDescription,
                 Date = dateTime,
                 IsComplete = false
             };
+            //List<Task> tasks = LoadTasks();
             tasks.Add(NewTask);
+            SaveTasks(tasks);
             Console.WriteLine("Task added successfully!");
         }
 
@@ -112,6 +131,24 @@ namespace ToDoListManager
                 Console.WriteLine(number +". Task: "+ tasks[i].TaskName + ", Due:" + tasks[i].Date.ToString("d-MM-yyyy") );
             }
 
+        }
+        private static List<Task> LoadTasks()
+        {
+            if (File.Exists("tasks.json"))
+            {
+                string json = File.ReadAllText("tasks.json");
+                return JsonConvert.DeserializeObject<List<Task>>(json);
+            }
+            else
+            {
+                return new List<Task>();
+            }
+        }
+
+        private void SaveTasks(List<Task> tasks)
+        {
+            string json = JsonConvert.SerializeObject(tasks,Formatting.Indented);
+            File.WriteAllText("tasks.json",json);
         }
 
     }
