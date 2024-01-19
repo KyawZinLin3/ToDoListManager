@@ -107,6 +107,7 @@ namespace ToDoListManager
             string taskDescription = Console.ReadLine();
             Console.Write("Enter due date (YYYY-MM-DD):");
             DateTime dateTime = DateTime.Parse(Console.ReadLine());
+            //st<Task> tasks = LoadTasks();
             Task NewTask = new Task
             {
                 Id = GenerateId(),
@@ -132,23 +133,26 @@ namespace ToDoListManager
             }
 
         }
-        private static List<Task> LoadTasks()
-        {
-            if (File.Exists("tasks.json"))
-            {
-                string json = File.ReadAllText("tasks.json");
-                return JsonConvert.DeserializeObject<List<Task>>(json);
-            }
-            else
-            {
-                return new List<Task>();
-            }
-        }
+        //static List<Task> LoadTasks()
+        //{
+        //    string filePath = "";
+
+        //    if (File.Exists(filePath))
+        //    {
+        //        string json = File.ReadAllText(filePath);
+        //        return JsonConvert.DeserializeObject<List<Task>>(json);
+        //    }
+        //    else
+        //    {
+        //        return new List<Task>();
+        //    }
+        //}
 
         private void SaveTasks(List<Task> tasks)
         {
+            string filePath = @"D:\tasks.json";
             string json = JsonConvert.SerializeObject(tasks,Formatting.Indented);
-            File.WriteAllText("tasks.json",json);
+            File.WriteAllText(filePath,json);
         }
 
     }
