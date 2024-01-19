@@ -47,10 +47,12 @@ namespace ToDoListManager
         public bool IsComplete { get; set; }
 
     }
+    
     internal class Program
     {
         //Program program = new Program();
         List<Task> tasks = new List<Task>();
+        
         bool status = true;
         private int id = 1;
         public int GenerateId()
@@ -107,7 +109,7 @@ namespace ToDoListManager
             string taskDescription = Console.ReadLine();
             Console.Write("Enter due date (YYYY-MM-DD):");
             DateTime dateTime = DateTime.Parse(Console.ReadLine());
-            //st<Task> tasks = LoadTasks();
+            List<Task> tasksJson = LoadTasks();
             Task NewTask = new Task
             {
                 Id = GenerateId(),
@@ -117,36 +119,38 @@ namespace ToDoListManager
                 IsComplete = false
             };
             //List<Task> tasks = LoadTasks();
-            tasks.Add(NewTask);
-            SaveTasks(tasks);
+            tasksJson.Add(NewTask);
+            SaveTasks(tasksJson);
             Console.WriteLine("Task added successfully!");
         }
 
         private void ViewTask()
         {
+            List<Task> tasksJSON = LoadTasks();
             Console.WriteLine("Your To-Do List:");
             Console.WriteLine(" ");
-            for(int i=0; i<tasks.Count; i++)
+            for(int i=0; i< tasksJSON.Count; i++)
             {
                 int number = i + 1;
-                Console.WriteLine(number +". Task: "+ tasks[i].TaskName + ", Due:" + tasks[i].Date.ToString("d-MM-yyyy") );
+                Console.WriteLine(number +". Task: "+ tasksJSON[i].TaskName + ", Due:" + tasksJSON[i].Date.ToString("d-MM-yyyy") );
             }
 
         }
-        //static List<Task> LoadTasks()
-        //{
-        //    string filePath = "";
+        static List<Task> LoadTasks()
+        {
+            
+            string filePath = @"D:\tasks.json";
 
-        //    if (File.Exists(filePath))
-        //    {
-        //        string json = File.ReadAllText(filePath);
-        //        return JsonConvert.DeserializeObject<List<Task>>(json);
-        //    }
-        //    else
-        //    {
-        //        return new List<Task>();
-        //    }
-        //}
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<List<Task>>(json);
+            }
+            else
+            {
+                return new List<Task>();
+            }
+        }
 
         private void SaveTasks(List<Task> tasks)
         {
