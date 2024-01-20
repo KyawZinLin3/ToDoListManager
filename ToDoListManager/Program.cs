@@ -30,14 +30,6 @@ namespace ToDoListManager
         public string REVERSE = Console.IsOutputRedirected ? "" : "\x1b[7m";
         public string NOREVERSE = Console.IsOutputRedirected ? "" : "\x1b[27m";
     }
-    //class AutoIncrement
-    //{
-    //    private int id = 1;
-    //    public int GenerateId()
-    //    {
-    //        return id++;
-    //    }
-    //}
     class Task
     {
         public int Id { get; set; }
@@ -47,18 +39,14 @@ namespace ToDoListManager
         public bool IsComplete { get; set; }
 
     }
-    
+
     internal class Program
     {
-        //Program program = new Program();
         List<Task> tasks = new List<Task>();
-        
+        // List<Task> task = LoadTasks();
         bool status = true;
-        private int id = 1;
-        public int GenerateId()
-        {
-            return id++;
-        }
+
+
         static void Main(string[] args)
         {
             Program program = new Program();
@@ -68,10 +56,9 @@ namespace ToDoListManager
             {
                 Console.Write($"{color.MAGENTA}Enter your choice:");
                 int value = int.Parse(Console.ReadLine());
-                program.PerformOption(value);   
+                program.PerformOption(value);
 
             }
-            //Console.ReadKey();
         }
 
         private void Menu()
@@ -95,12 +82,24 @@ namespace ToDoListManager
                     AddTask();
                     break;
                 case 2:
-                    //status = false;
                     ViewTask();
+                    break;
+                case 3:
+                    MarkCompleteTask();
+                    break;
+                case 4:
+                    RemoveTasks();
+                    break;
+                case 5:
+                    ViewCompletedTasks();
+                    break;
+                case 6:
+                    Console.WriteLine("To-Do List saved successfully. Exiting the To-Do List Manager. Goodbye!");
+                    Console.ReadKey();
+                    status = false;
                     break;
             }
         }
-
         private void AddTask()
         {
             Console.Write("Enter task name:");
@@ -109,19 +108,19 @@ namespace ToDoListManager
             string taskDescription = Console.ReadLine();
             Console.Write("Enter due date (YYYY-MM-DD):");
             DateTime dateTime = DateTime.Parse(Console.ReadLine());
+            dateTime.ToString("d-MM-yyyy");
             List<Task> tasksJson = LoadTasks();
             Task NewTask = new Task
             {
-                Id = GenerateId(),
                 TaskName = taskName,
                 TaskDescription = taskDescription,
                 Date = dateTime,
                 IsComplete = false
             };
-            //List<Task> tasks = LoadTasks();
             tasksJson.Add(NewTask);
             SaveTasks(tasksJson);
             Console.WriteLine("Task added successfully!");
+            Console.WriteLine(" ");
         }
 
         private void ViewTask()
@@ -129,16 +128,18 @@ namespace ToDoListManager
             List<Task> tasksJSON = LoadTasks();
             Console.WriteLine("Your To-Do List:");
             Console.WriteLine(" ");
-            for(int i=0; i< tasksJSON.Count; i++)
+            for (int i = 0; i < tasksJSON.Count; i++)
             {
+                string complete = tasksJSON[i].IsComplete ? "Completed" : "Incomplete";
                 int number = i + 1;
-                Console.WriteLine(number +". Task: "+ tasksJSON[i].TaskName + ", Due:" + tasksJSON[i].Date.ToString("d-MM-yyyy") );
+                Console.WriteLine(number + ". Task: " + tasksJSON[i].TaskName + ", Due:" + tasksJSON[i].Date.ToString("d-MM-yyyy")+", Status : "+complete);
             }
+            Console.WriteLine("");
 
         }
         static List<Task> LoadTasks()
         {
-            
+
             string filePath = @"D:\tasks.json";
 
             if (File.Exists(filePath))
@@ -155,9 +156,67 @@ namespace ToDoListManager
         private void SaveTasks(List<Task> tasks)
         {
             string filePath = @"D:\tasks.json";
-            string json = JsonConvert.SerializeObject(tasks,Formatting.Indented);
-            File.WriteAllText(filePath,json);
+            string json = JsonConvert.SerializeObject(tasks, Formatting.Indented);
+            File.WriteAllText(filePath, json);
         }
 
+        private void RemoveTasks()
+        {
+            Console.Write("Enter the ID of the task to remove:");
+            int input = int.Parse(Console.ReadLine());
+            List<Task> tasks = LoadTasks();
+            int index = input - 1;
+            if (index >= 0 && index < tasks.Count)
+            {
+                tasks.RemoveAt(index);
+                SaveTasks(tasks);
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Invalid Number");
+            }
+            Console.WriteLine(" ");
+        }
+
+        private void MarkCompleteTask()
+        {
+            Console.Write("Enter the ID of the task to mark as completed:");
+            int input = int.Parse(Console.ReadLine());
+            List<Task> tasks = LoadTasks();
+            int index = input - 1;
+            if (index >= 0 && index < tasks.Count)
+            {
+                tasks[index].IsComplete = true;
+                SaveTasks(tasks);
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Invalid Number");
+            }
+            Console.WriteLine(" ");
+        }
+
+        private void ViewCompletedTasks()
+        {
+            Console.WriteLine("Completed Tasks: ");
+            List<Task> tasks = LoadTasks();
+            List<Task> CompletedTasks = new List<Task>();   
+            foreach (Task task in tasks)
+            {
+                if(task.IsComplete == true)
+                {
+                    CompletedTasks.Add(task);
+                }
+            }
+            foreach(Task task in CompletedTasks)
+            {
+                string complete = task.IsComplete ? "Completed" : "Incomplete";
+                Console.WriteLine(". Task: " + task.TaskName + ", Due:" + task.Date.ToString("d-MM-yyyy") + ", Status : " + complete);
+
+            }
+            Console.WriteLine(" ");
+        }
     }
 }
